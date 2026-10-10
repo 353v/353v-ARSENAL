@@ -1880,8 +1880,13 @@ local function asOrionTab(tab)
         return tab:AddButton({Name = tostring(name), Callback = callback})
     end
     function section:NewSlider(name, description, maximum, minimum, callback)
+        local initial = minimum or 0
+        -- Arsenal's FOV setting must not initialize at zero.
+        if tostring(name):lower():find("fov arsenal", 1, true) then
+            initial = math.clamp(70, minimum or 0, maximum or 120)
+        end
         return tab:AddSlider({Name = tostring(name), Min = minimum or 0, Max = maximum or 100,
-            Default = minimum or 0, Increment = 1, ValueName = "", Callback = callback})
+            Default = initial, Increment = 1, ValueName = "", Callback = callback})
     end
     function section:NewDropdown(name, description, choices, callback)
         local options = type(choices) == "table" and choices or {"Default"}
